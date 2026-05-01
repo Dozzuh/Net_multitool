@@ -1,5 +1,11 @@
 import socket
+import threading
+import time
 # add error handling for only port range numbers, and to make sure the end number is not smaller than the first number.
+
+thread_limiter = threading.Semaphore(10)
+results = {}
+lock = threading.Lock()
 
 
 def user_input():
@@ -16,6 +22,7 @@ def user_input():
 
 def connect(th, tp):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.settimeout(1)
     try:
         client.connect((th, tp))
         return "Open"
@@ -23,3 +30,12 @@ def connect(th, tp):
         return "Closed"
     finally:
         client.close()
+
+
+# This function limits the amount of threads made, takes the output of connect()
+# stores it in result, then stores the key/value pair in to a dictionary called results
+def scan_port(host, port):
+    with thread_limiter:
+        result = connect(host, port)
+        with lock:
+            results[port] = result
