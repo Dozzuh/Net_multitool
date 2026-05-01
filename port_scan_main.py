@@ -6,10 +6,9 @@ import port_functions
 
 tgt_host, tgt_port, end_port = port_functions.user_input()
 
-threads = []
+threads = []  # creates an empty list that will later be used to store each thread
 
-# For loop job will switch to creating threads rather than iterating through each port to scan
-# changes from scanning ports to creating instances of scanning the port
+# The below loop, creates a thread with the plan to run scan_port, starts the thread, and adds it to the list.
 for x in range(tgt_port, end_port + 1):
     thread = threading.Thread(
         target=port_functions.scan_port, args=(tgt_host, x))
@@ -17,6 +16,7 @@ for x in range(tgt_port, end_port + 1):
     threads.append(thread)
 
 for thread in threads:
-    thread.join()
-    # result = port_functions.connect(tgt_host, x)
-    # print(f"The port {x} on host {tgt_host} is {result}")
+    thread.join()  # this tells the parent thread to wait for the child threads to complete before moving on
+
+for port in sorted(port_functions.results):
+    print(f"Port {port} is {port_functions.results[port]}")
