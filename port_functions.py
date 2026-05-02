@@ -14,7 +14,20 @@ def user_input():
         try:
             start_port = int(
                 input("Enter the start of the port range to scan: "))
+            if start_port < 0:
+                print("Negative port numbers are not valid.")
+                continue
             end_port = int(input("Enter the end range of the port to scan: "))
+            if end_port > 65535:
+                print("Not a valid port exceeds port range, valid range is 0-65535")
+                continue
+            if end_port < 0:
+                print(
+                    "Negative numbers are not allowed, Ensure your end range is higher than your start.")
+                continue
+            if start_port > end_port:
+                print("The end cannot be lower than the start.")
+                continue
             return target_host, start_port, end_port
         except:
             print("Not a valid port number.\nValid port numbers are 0-65535")
