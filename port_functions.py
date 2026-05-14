@@ -50,5 +50,8 @@ def connect(th, tp):
 def scan_port(host, port):
     with thread_limiter:
         result = connect(host, port)
+        service_name = []
+        service_name.append(socket.getservbyport(port, "tcp"))
+        service_name.append(result)
         with lock:
-            results[port] = result
+            results[port] = service_name
