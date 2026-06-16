@@ -51,7 +51,10 @@ def scan_port(host, port):
     with thread_limiter:
         result = connect(host, port)
         service_name = []
-        service_name.append(socket.getservbyport(port, "tcp"))
+        try:
+            service_name.append(socket.getservbyport(port, "tcp"))
+        except:
+            service_name.append("Uknown port number")
         service_name.append(result)
         with lock:
             results[port] = service_name
